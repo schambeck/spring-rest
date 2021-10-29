@@ -1,5 +1,6 @@
 package com.jobsity.rest.service;
 
+import com.jobsity.rest.base.NotFoundException;
 import com.jobsity.rest.domain.Invoice;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ public class InvoiceService {
     }
 
     public Invoice findByIndex(int index) {
+        if (notExists(index)) {
+            throw new NotFoundException();
+        }
         return invoices.get(index);
     }
 
@@ -24,6 +28,9 @@ public class InvoiceService {
     }
 
     public Invoice update(int index, Invoice invoice) {
+        if (notExists(index)) {
+            throw new NotFoundException();
+        }
         Invoice updated = invoices.get(index);
         updated.setIssued(invoice.getIssued());
         updated.setTotal(invoice.getTotal());
@@ -31,11 +38,14 @@ public class InvoiceService {
     }
 
     public void delete(int index) {
+        if (notExists(index)) {
+            throw new NotFoundException();
+        }
         invoices.remove(index);
     }
 
-    public boolean exists(int index) {
-        return index < invoices.size();
+    private boolean notExists(int index) {
+        return index >= invoices.size();
     }
 
     private static final List<Invoice> invoices = new ArrayList<Invoice>() {{

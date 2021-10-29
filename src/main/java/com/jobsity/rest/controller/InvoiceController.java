@@ -26,11 +26,7 @@ public class InvoiceController {
 
     @GetMapping("/{index}")
     public ResponseEntity<Invoice> findByIndex(@PathVariable("index") int index) {
-        if (service.exists(index)) {
-            return ResponseEntity.ok(service.findByIndex(index));
-        } else {
-            return ResponseEntity.status(NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(service.findByIndex(index));
     }
 
     @PostMapping
@@ -39,23 +35,15 @@ public class InvoiceController {
         return ResponseEntity.status(CREATED).body(created);
     }
 
-    @PutMapping(value = "/{index}")
+    @PutMapping("/{index}")
     public ResponseEntity<Invoice> update(@PathVariable("index") int index, @RequestBody Invoice invoice) {
-        if (service.exists(index)) {
-            return ResponseEntity.ok(service.update(index, invoice));
-        } else {
-            return ResponseEntity.status(NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(service.update(index, invoice));
     }
 
-    @DeleteMapping(value = "/{index}")
+    @DeleteMapping("/{index}")
     public ResponseEntity<Void> delete(@PathVariable("index") int index) {
-        if (service.exists(index)) {
-            service.delete(index);
-            return ResponseEntity.status(NO_CONTENT).build();
-        } else {
-            return ResponseEntity.status(NOT_FOUND).build();
-        }
+        service.delete(index);
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 
 }

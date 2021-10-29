@@ -6,16 +6,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class InvoiceService {
-
-    private static final List<Invoice> invoices = new ArrayList<>(Arrays.asList(
-            new Invoice(1L, LocalDate.now(), BigDecimal.valueOf(1000)),
-            new Invoice(2L, LocalDate.now(), BigDecimal.valueOf(2000))
-    ));
 
     public List<Invoice> findAll() {
         return invoices;
@@ -43,5 +37,12 @@ public class InvoiceService {
     public boolean exists(int index) {
         return index < invoices.size();
     }
+
+    private static final List<Invoice> invoices = new ArrayList<Invoice>() {{
+        add(new Invoice(1L, LocalDate.now(), BigDecimal.valueOf(1000)));
+        add(new Invoice(2L, LocalDate.now(), BigDecimal.valueOf(2000)));
+        add(new Invoice(3L, LocalDate.now(), BigDecimal.valueOf(3000)));
+        add(new Invoice(4L, LocalDate.now(), BigDecimal.valueOf(4000)));
+    }};
 
 }

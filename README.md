@@ -1,6 +1,6 @@
 # spring-rest
 
-Spring boot rest application. 
+Spring boot rest application with static data. 
 
 ## Postman
 Use the following collection in order to test its requests:

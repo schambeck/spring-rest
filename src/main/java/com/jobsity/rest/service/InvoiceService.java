@@ -24,6 +24,7 @@ public class InvoiceService {
     }
 
     public Invoice create(Invoice invoice) {
+        invoices.add(invoice);
         return invoice;
     }
 

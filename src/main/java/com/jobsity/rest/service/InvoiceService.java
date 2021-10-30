@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.time.Month.FEBRUARY;
+
 @Service
 public class InvoiceService {
 
@@ -50,10 +52,10 @@ public class InvoiceService {
     }
 
     private static final List<Invoice> invoices = new ArrayList<Invoice>() {{
-        add(new Invoice(1L, LocalDate.now(), BigDecimal.valueOf(1000)));
-        add(new Invoice(2L, LocalDate.now(), BigDecimal.valueOf(2000)));
-        add(new Invoice(3L, LocalDate.now(), BigDecimal.valueOf(3000)));
-        add(new Invoice(4L, LocalDate.now(), BigDecimal.valueOf(4000)));
+        add(new Invoice(1L, LocalDate.of(2021, FEBRUARY, 1), BigDecimal.valueOf(1000)));
+        add(new Invoice(2L, LocalDate.of(2021, FEBRUARY, 2), BigDecimal.valueOf(2000)));
+        add(new Invoice(3L, LocalDate.of(2021, FEBRUARY, 3), BigDecimal.valueOf(3000)));
+        add(new Invoice(4L, LocalDate.of(2021, FEBRUARY, 4), BigDecimal.valueOf(4000)));
     }};
 
 }

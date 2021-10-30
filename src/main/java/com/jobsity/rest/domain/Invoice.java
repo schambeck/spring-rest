@@ -3,10 +3,11 @@ package com.jobsity.rest.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Invoice implements Serializable {
 
-    private Long id;
+    private final Long id;
 
     private LocalDate issued;
 
@@ -36,6 +37,28 @@ public class Invoice implements Serializable {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Invoice invoice = (Invoice) o;
+        return Objects.equals(id, invoice.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "id=" + id +
+                ", issued=" + issued +
+                ", total=" + total +
+                '}';
     }
 
 }

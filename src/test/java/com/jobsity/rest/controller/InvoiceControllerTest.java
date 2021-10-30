@@ -1,0 +1,115 @@
+package com.jobsity.rest.controller;
+
+import com.jobsity.rest.base.ObjectMapperUtil;
+import com.jobsity.rest.domain.Invoice;
+import com.jobsity.rest.service.InvoiceService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.time.Month.FEBRUARY;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(InvoiceController.class)
+@Import(ObjectMapperUtil.class)
+class InvoiceControllerTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@Autowired
+	private ObjectMapperUtil mapperUtil;
+
+	@MockBean
+	private InvoiceService service;
+
+	@Test
+	void testFindAll() throws Exception {
+		when(service.findAll()).thenReturn(invoices);
+		ResultActions actions = mockMvc.perform(get("/invoices"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$").isArray())
+				.andExpect(jsonPath("$", hasSize(invoices.size())));
+
+		for (int i = 0; i < invoices.size(); i++) {
+			Invoice invoice = invoices.get(i);
+			String index = "$[" + i + "]";
+			actions.andExpect(jsonPath(index + ".id", is(invoice.getId().intValue())))
+				.andExpect(jsonPath(index + ".issued", is(invoice.getIssued().toString())))
+				.andExpect(jsonPath(index + ".total", is(invoice.getTotal().intValue())));
+		}
+
+		verify(service, times(1)).findAll();
+	}
+
+	@Test
+	void testFindByIndex() throws Exception {
+		Invoice invoice = invoices.get(0);
+		when(service.findByIndex(0)).thenReturn(invoice);
+		mockMvc.perform(get("/invoices/{index}", 0))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(invoice.getId().intValue())))
+				.andExpect(jsonPath("$.issued", is(invoice.getIssued().toString())))
+				.andExpect(jsonPath("$.total", is(invoice.getTotal().intValue())));
+		verify(service, times(1)).findByIndex(0);
+	}
+
+	@Test
+	void testCreate() throws Exception {
+		Invoice invoice = new Invoice(5L, LocalDate.of(2021, FEBRUARY, 5), BigDecimal.valueOf(5000));
+		when(service.create(invoice)).thenReturn(invoice);
+		mockMvc.perform(post("/invoices")
+						.content(mapperUtil.asJsonString(invoice))
+						.contentType(APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id", is(invoice.getId().intValue())))
+				.andExpect(jsonPath("$.issued", is(invoice.getIssued().toString())))
+				.andExpect(jsonPath("$.total", is(invoice.getTotal().intValue())));
+		verify(service, times(1)).create(invoice);
+	}
+
+	@Test
+	void testUpdate() throws Exception {
+		Invoice invoice = invoices.get(0);
+		when(service.update(0, invoice)).thenReturn(invoice);
+		mockMvc.perform(put("/invoices/{index}", 0)
+						.content(mapperUtil.asJsonString(invoice))
+						.contentType(APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(invoice.getId().intValue())))
+				.andExpect(jsonPath("$.issued", is(invoice.getIssued().toString())))
+				.andExpect(jsonPath("$.total", is(invoice.getTotal().intValue())));
+		verify(service, times(1)).update(0, invoice);
+	}
+
+	@Test
+	void testDelete() throws Exception {
+		doNothing().when(service).delete(0);
+		mockMvc.perform(delete("/invoices/{index}", 0))
+				.andExpect(status().isNoContent());
+		verify(service, times(1)).delete(0);
+	}
+
+	private static final List<Invoice> invoices = new ArrayList<Invoice>() {{
+		add(new Invoice(1L, LocalDate.of(2021, FEBRUARY, 1), BigDecimal.valueOf(1000)));
+		add(new Invoice(2L, LocalDate.of(2021, FEBRUARY, 2), BigDecimal.valueOf(2000)));
+		add(new Invoice(3L, LocalDate.of(2021, FEBRUARY, 3), BigDecimal.valueOf(3000)));
+		add(new Invoice(4L, LocalDate.of(2021, FEBRUARY, 4), BigDecimal.valueOf(4000)));
+	}};
+
+}

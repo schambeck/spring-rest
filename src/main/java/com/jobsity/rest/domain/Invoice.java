@@ -13,6 +13,14 @@ public class Invoice implements Serializable {
 
     private BigDecimal total;
 
+    public Invoice() {
+        this(null, null);
+    }
+
+    public Invoice(LocalDate issued, BigDecimal total) {
+        this(null, issued, total);
+    }
+
     public Invoice(Long id, LocalDate issued, BigDecimal total) {
         this.id = id;
         this.issued = issued;

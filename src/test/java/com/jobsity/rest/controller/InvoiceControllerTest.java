@@ -1,5 +1,6 @@
 package com.jobsity.rest.controller;
 
+import com.jobsity.rest.base.NotFoundException;
 import com.jobsity.rest.base.ObjectMapperUtil;
 import com.jobsity.rest.domain.Invoice;
 import com.jobsity.rest.service.InvoiceService;
@@ -83,6 +84,14 @@ class InvoiceControllerTest {
 	}
 
 	@Test
+	void testFindByIdNotFound() throws Exception {
+		when(service.findById(6L)).thenThrow(NotFoundException.class);
+		mockMvc.perform(get("/invoices/{id}", 6))
+				.andExpect(status().isNotFound());
+		verify(service).findById(6L);
+	}
+
+	@Test
 	void testCreate() throws Exception {
 		Invoice invoice = new Invoice(5L, LocalDate.of(2021, FEBRUARY, 5), BigDecimal.valueOf(5000));
 		when(service.create(invoice)).thenReturn(invoice);
@@ -111,11 +120,30 @@ class InvoiceControllerTest {
 	}
 
 	@Test
+	void testUpdateNotFound() throws Exception {
+		Invoice invoice = new Invoice(LocalDate.of(2021, FEBRUARY, 5), BigDecimal.valueOf(5000));
+		when(service.update(6L, invoice)).thenThrow(NotFoundException.class);
+		mockMvc.perform(put("/invoices/{id}", 6)
+						.content(mapperUtil.asJsonString(invoice))
+						.contentType(APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+		verify(service).update(6L, invoice);
+	}
+
+	@Test
 	void testDelete() throws Exception {
 		doNothing().when(service).delete(1L);
 		mockMvc.perform(delete("/invoices/{id}", 1))
 				.andExpect(status().isNoContent());
 		verify(service).delete(1L);
+	}
+
+	@Test
+	void testDeleteNotFound() throws Exception {
+		doThrow(NotFoundException.class).when(service).delete(6L);
+		mockMvc.perform(delete("/invoices/{id}", 6))
+				.andExpect(status().isNotFound());
+		verify(service).delete(6L);
 	}
 
 }

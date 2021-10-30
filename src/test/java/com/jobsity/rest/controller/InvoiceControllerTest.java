@@ -3,6 +3,7 @@ package com.jobsity.rest.controller;
 import com.jobsity.rest.base.ObjectMapperUtil;
 import com.jobsity.rest.domain.Invoice;
 import com.jobsity.rest.service.InvoiceService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,6 +39,18 @@ class InvoiceControllerTest {
 	@MockBean
 	private InvoiceService service;
 
+	private List<Invoice> invoices;
+
+	@BeforeEach
+	void setUp() {
+		invoices = new ArrayList<Invoice>() {{
+			add(new Invoice(1L, LocalDate.of(2021, FEBRUARY, 1), BigDecimal.valueOf(1000)));
+			add(new Invoice(2L, LocalDate.of(2021, FEBRUARY, 2), BigDecimal.valueOf(2000)));
+			add(new Invoice(3L, LocalDate.of(2021, FEBRUARY, 3), BigDecimal.valueOf(3000)));
+			add(new Invoice(4L, LocalDate.of(2021, FEBRUARY, 4), BigDecimal.valueOf(4000)));
+		}};
+	}
+
 	@Test
 	void testFindAll() throws Exception {
 		when(service.findAll()).thenReturn(invoices);
@@ -54,19 +67,19 @@ class InvoiceControllerTest {
 				.andExpect(jsonPath(index + ".total", is(invoice.getTotal().intValue())));
 		}
 
-		verify(service, times(1)).findAll();
+		verify(service).findAll();
 	}
 
 	@Test
-	void testFindByIndex() throws Exception {
+	void testFindById() throws Exception {
 		Invoice invoice = invoices.get(0);
-		when(service.findByIndex(0)).thenReturn(invoice);
-		mockMvc.perform(get("/invoices/{index}", 0))
+		when(service.findById(1L)).thenReturn(invoice);
+		mockMvc.perform(get("/invoices/{id}", 1))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(invoice.getId().intValue())))
 				.andExpect(jsonPath("$.issued", is(invoice.getIssued().toString())))
 				.andExpect(jsonPath("$.total", is(invoice.getTotal().intValue())));
-		verify(service, times(1)).findByIndex(0);
+		verify(service).findById(1L);
 	}
 
 	@Test
@@ -80,36 +93,29 @@ class InvoiceControllerTest {
 				.andExpect(jsonPath("$.id", is(invoice.getId().intValue())))
 				.andExpect(jsonPath("$.issued", is(invoice.getIssued().toString())))
 				.andExpect(jsonPath("$.total", is(invoice.getTotal().intValue())));
-		verify(service, times(1)).create(invoice);
+		verify(service).create(invoice);
 	}
 
 	@Test
 	void testUpdate() throws Exception {
 		Invoice invoice = invoices.get(0);
-		when(service.update(0, invoice)).thenReturn(invoice);
-		mockMvc.perform(put("/invoices/{index}", 0)
+		when(service.update(1L, invoice)).thenReturn(invoice);
+		mockMvc.perform(put("/invoices/{id}", 1)
 						.content(mapperUtil.asJsonString(invoice))
 						.contentType(APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(invoice.getId().intValue())))
 				.andExpect(jsonPath("$.issued", is(invoice.getIssued().toString())))
 				.andExpect(jsonPath("$.total", is(invoice.getTotal().intValue())));
-		verify(service, times(1)).update(0, invoice);
+		verify(service).update(1L, invoice);
 	}
 
 	@Test
 	void testDelete() throws Exception {
-		doNothing().when(service).delete(0);
-		mockMvc.perform(delete("/invoices/{index}", 0))
+		doNothing().when(service).delete(1L);
+		mockMvc.perform(delete("/invoices/{id}", 1))
 				.andExpect(status().isNoContent());
-		verify(service, times(1)).delete(0);
+		verify(service).delete(1L);
 	}
-
-	private static final List<Invoice> invoices = new ArrayList<Invoice>() {{
-		add(new Invoice(1L, LocalDate.of(2021, FEBRUARY, 1), BigDecimal.valueOf(1000)));
-		add(new Invoice(2L, LocalDate.of(2021, FEBRUARY, 2), BigDecimal.valueOf(2000)));
-		add(new Invoice(3L, LocalDate.of(2021, FEBRUARY, 3), BigDecimal.valueOf(3000)));
-		add(new Invoice(4L, LocalDate.of(2021, FEBRUARY, 4), BigDecimal.valueOf(4000)));
-	}};
 
 }

@@ -24,9 +24,9 @@ public class InvoiceController {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping("/{index}")
-    public ResponseEntity<Invoice> findByIndex(@PathVariable("index") int index) {
-        return ResponseEntity.ok(service.findByIndex(index));
+    @GetMapping("/{id}")
+    public ResponseEntity<Invoice> findById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
@@ -35,14 +35,14 @@ public class InvoiceController {
         return ResponseEntity.status(CREATED).body(created);
     }
 
-    @PutMapping("/{index}")
-    public ResponseEntity<Invoice> update(@PathVariable("index") int index, @RequestBody Invoice invoice) {
-        return ResponseEntity.ok(service.update(index, invoice));
+    @PutMapping("/{id}")
+    public ResponseEntity<Invoice> update(@PathVariable("id") Long id, @RequestBody Invoice invoice) {
+        return ResponseEntity.ok(service.update(id, invoice));
     }
 
-    @DeleteMapping("/{index}")
-    public ResponseEntity<Void> delete(@PathVariable("index") int index) {
-        service.delete(index);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        service.delete(id);
         return ResponseEntity.status(NO_CONTENT).build();
     }
 

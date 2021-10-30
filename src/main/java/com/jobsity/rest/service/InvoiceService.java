@@ -18,11 +18,11 @@ public class InvoiceService {
         return invoices;
     }
 
-    public Invoice findByIndex(int index) {
-        if (notExists(index)) {
-            throw new NotFoundException();
-        }
-        return invoices.get(index);
+    public Invoice findById(Long id) {
+        return invoices.stream()
+                .filter(invoice -> invoice.getId().equals(id))
+                .findFirst()
+                .orElseThrow(NotFoundException::new);
     }
 
     public Invoice create(Invoice invoice) {
@@ -30,25 +30,16 @@ public class InvoiceService {
         return invoice;
     }
 
-    public Invoice update(int index, Invoice invoice) {
-        if (notExists(index)) {
-            throw new NotFoundException();
-        }
-        Invoice updated = invoices.get(index);
+    public Invoice update(Long id, Invoice invoice) {
+        Invoice updated = findById(id);
         updated.setIssued(invoice.getIssued());
         updated.setTotal(invoice.getTotal());
         return updated;
     }
 
-    public void delete(int index) {
-        if (notExists(index)) {
-            throw new NotFoundException();
-        }
-        invoices.remove(index);
-    }
-
-    private boolean notExists(int index) {
-        return index >= invoices.size();
+    public void delete(Long id) {
+        Invoice invoice = findById(id);
+        invoices.remove(invoice);
     }
 
     private static final List<Invoice> invoices = new ArrayList<Invoice>() {{

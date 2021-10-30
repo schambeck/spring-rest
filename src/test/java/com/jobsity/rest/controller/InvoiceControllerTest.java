@@ -1,5 +1,6 @@
 package com.jobsity.rest.controller;
 
+import com.jobsity.rest.base.ConflictException;
 import com.jobsity.rest.base.NotFoundException;
 import com.jobsity.rest.base.ObjectMapperUtil;
 import com.jobsity.rest.domain.Invoice;
@@ -102,6 +103,17 @@ class InvoiceControllerTest {
 				.andExpect(jsonPath("$.id", is(invoice.getId().intValue())))
 				.andExpect(jsonPath("$.issued", is(invoice.getIssued().toString())))
 				.andExpect(jsonPath("$.total", is(invoice.getTotal().intValue())));
+		verify(service).create(invoice);
+	}
+
+	@Test
+	void testCreateConflict() throws Exception {
+		Invoice invoice = new Invoice(4L, LocalDate.of(2021, FEBRUARY, 4), BigDecimal.valueOf(4000));
+		when(service.create(invoice)).thenThrow(ConflictException.class);
+		mockMvc.perform(post("/invoices")
+						.content(mapperUtil.asJsonString(invoice))
+						.contentType(APPLICATION_JSON))
+				.andExpect(status().isConflict());
 		verify(service).create(invoice);
 	}
 

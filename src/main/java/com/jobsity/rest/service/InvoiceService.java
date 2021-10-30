@@ -1,5 +1,6 @@
 package com.jobsity.rest.service;
 
+import com.jobsity.rest.base.ConflictException;
 import com.jobsity.rest.base.NotFoundException;
 import com.jobsity.rest.domain.Invoice;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,13 @@ public class InvoiceService {
     }
 
     public Invoice create(Invoice invoice) {
-        invoices.add(invoice);
-        return invoice;
+        try {
+            findById(invoice.getId());
+            throw new ConflictException();
+        } catch (NotFoundException e) {
+            invoices.add(invoice);
+            return invoice;
+        }
     }
 
     public Invoice update(Long id, Invoice invoice) {

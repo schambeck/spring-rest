@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.time.Month.FEBRUARY;
+import static java.lang.String.format;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -25,17 +25,18 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoices.stream()
                 .filter(invoice -> invoice.getId().equals(id))
                 .findFirst()
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(format("Entity %d not found", id)));
     }
 
     @Override
     public Invoice create(Invoice invoice) {
         try {
             findById(invoice.getId());
-            throw new ConflictException();
+            throw new ConflictException(format("Entity %d already exists", invoice.getId()));
         } catch (NotFoundException e) {
-            invoices.add(invoice);
-            return invoice;
+            Invoice created = new Invoice(invoice.getId(), invoice.getIssued(), invoice.getTotal());
+            invoices.add(created);
+            return created;
         }
     }
 
@@ -54,10 +55,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     private static final List<Invoice> invoices = new ArrayList<Invoice>() {{
-        add(new Invoice(1L, LocalDate.of(2021, FEBRUARY, 1), BigDecimal.valueOf(1000)));
-        add(new Invoice(2L, LocalDate.of(2021, FEBRUARY, 2), BigDecimal.valueOf(2000)));
-        add(new Invoice(3L, LocalDate.of(2021, FEBRUARY, 3), BigDecimal.valueOf(3000)));
-        add(new Invoice(4L, LocalDate.of(2021, FEBRUARY, 4), BigDecimal.valueOf(4000)));
+        add(createInvoice(1L, "2021-02-01", 1000));
+        add(createInvoice(2L, "2021-02-02", 2000));
+        add(createInvoice(3L, "2021-02-03", 3000));
+        add(createInvoice(4L, "2021-02-04", 4000));
     }};
+
+    private static Invoice createInvoice(Long id, String issued, double total) {
+        return new Invoice(id, LocalDate.parse(issued), BigDecimal.valueOf(total));
+    }
 
 }

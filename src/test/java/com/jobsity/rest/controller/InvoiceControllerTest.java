@@ -163,4 +163,16 @@ class InvoiceControllerTest {
 				.andExpect(status().isNotFound());
 	}
 
+	@Test
+	void createInvalidTotal() throws Exception {
+		Invoice invoice = createInvoice(1L, "2021-02-01", 0);
+		String body = mapperUtil.asJsonString(invoice);
+		when(service.create(invoice)).thenReturn(invoice);
+
+		mockMvc.perform(post("/invoices")
+						.contentType("application/json")
+						.content(body))
+				.andExpect(status().isBadRequest());
+	}
+
 }

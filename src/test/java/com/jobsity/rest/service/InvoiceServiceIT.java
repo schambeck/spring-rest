@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("integration")
 @SpringBootTest(classes = InvoiceServiceImpl.class)
-class InvoiceServiceITTest {
+class InvoiceServiceIT {
 
 	@Autowired
 	private InvoiceService service;
@@ -31,7 +31,7 @@ class InvoiceServiceITTest {
 
 	private void resetInvoices() {
 		new ArrayList<>(service.findAll()).forEach(invoice -> service.delete(invoice.getId()));
-		InvoiceServiceITTest.invoices.forEach(invoice -> service.create(invoice));
+		InvoiceServiceIT.invoices.forEach(invoice -> service.create(invoice));
 	}
 
 	private Invoice createInvoice(String issued, double total) {

@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("integration")
 @Import({ObjectMapperUtil.class, InvoiceServiceImpl.class})
 @WebMvcTest(InvoiceController.class)
-class InvoiceControllerITTest {
+class InvoiceControllerIT {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -46,7 +46,7 @@ class InvoiceControllerITTest {
 
 	private void resetInvoices() {
 		new ArrayList<>(service.findAll()).forEach(invoice -> service.delete(invoice.getId()));
-		InvoiceControllerITTest.invoices.forEach(invoice -> service.create(invoice));
+		InvoiceControllerIT.invoices.forEach(invoice -> service.create(invoice));
 	}
 
 	private Invoice createInvoice(String issued, double total) {

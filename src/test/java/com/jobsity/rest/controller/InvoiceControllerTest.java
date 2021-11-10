@@ -5,7 +5,6 @@ import com.jobsity.rest.base.NotFoundException;
 import com.jobsity.rest.base.ObjectMapperUtil;
 import com.jobsity.rest.domain.Invoice;
 import com.jobsity.rest.service.InvoiceService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,23 +41,11 @@ class InvoiceControllerTest {
 	@MockBean
 	private InvoiceService service;
 
-	private List<Invoice> invoices;
-
-	@BeforeEach
-	void setUp() {
-		invoices = new ArrayList<Invoice>() {{
-			add(createInvoice(1L, "2021-02-01", 1000));
-			add(createInvoice(2L, "2021-02-02", 2000));
-			add(createInvoice(3L, "2021-02-03", 3000));
-			add(createInvoice(4L, "2021-02-04", 4000));
-		}};
-	}
-
 	private Invoice createInvoice(String issued, double total) {
 		return createInvoice(null, issued, total);
 	}
 
-	private Invoice createInvoice(Long id, String issued, double total) {
+	private static Invoice createInvoice(Long id, String issued, double total) {
 		return new Invoice(id, LocalDate.parse(issued), BigDecimal.valueOf(total));
 	}
 
@@ -92,8 +79,7 @@ class InvoiceControllerTest {
 
 	@Test
 	void findById() throws Exception {
-		Invoice invoice = createInvoice(1L, "2021-02-01", 1000);
-		when(service.findById(1L)).thenReturn(invoice);
+		when(service.findById(1L)).thenReturn(createInvoice(1L, "2021-02-01", 1000));
 		mockMvc.perform(get("/invoices/{id}", 1))
 				.andExpect(status().isOk())
 				.andExpectAll(invoiceMatchers(1, "2021-02-01", 1000D));
@@ -101,7 +87,7 @@ class InvoiceControllerTest {
 
 	@Test
 	void findByIdNotFound() throws Exception {
-		when(service.findById(6L)).thenThrow(NotFoundException.class);
+		doThrow(new NotFoundException("Entity 6 not found")).when(service).findById(6L);
 		mockMvc.perform(get("/invoices/{id}", 6))
 				.andExpect(status().isNotFound());
 	}
@@ -109,7 +95,7 @@ class InvoiceControllerTest {
 	@Test
 	void create() throws Exception {
 		Invoice invoice = createInvoice(5L, "2021-02-05", 5000);
-		when(service.create(invoice)).thenReturn(invoice);
+		when(service.create(invoice)).thenReturn(createInvoice(5L, "2021-02-05", 5000));
 		mockMvc.perform(post("/invoices")
 						.content(mapperUtil.asJsonString(invoice))
 						.contentType(APPLICATION_JSON))
@@ -120,7 +106,7 @@ class InvoiceControllerTest {
 	@Test
 	void createConflict() throws Exception {
 		Invoice invoice = createInvoice(4L, "2021-02-04", 4000);
-		when(service.create(invoice)).thenThrow(ConflictException.class);
+		doThrow(new ConflictException("Entity 4 already exists")).when(service).create(invoice);
 		mockMvc.perform(post("/invoices")
 						.content(mapperUtil.asJsonString(invoice))
 						.contentType(APPLICATION_JSON))
@@ -129,20 +115,19 @@ class InvoiceControllerTest {
 
 	@Test
 	void update() throws Exception {
-		Invoice invoice = createInvoice("2021-02-01", 2000);
-		Invoice updated = createInvoice(1L, "2021-02-01", 2000);
-		when(service.update(1L, invoice)).thenReturn(updated);
+		Invoice invoice = createInvoice("2021-02-02", 2000);
+		when(service.update(1L, invoice)).thenReturn(createInvoice(1L, "2021-02-02", 2000));
 		mockMvc.perform(put("/invoices/{id}", 1)
 						.content(mapperUtil.asJsonString(invoice))
 						.contentType(APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpectAll(invoiceMatchers(1, "2021-02-01", 2000D));
+				.andExpectAll(invoiceMatchers(1, "2021-02-02", 2000D));
 	}
 
 	@Test
 	void updateNotFound() throws Exception {
 		Invoice invoice = createInvoice("2021-02-06", 6000);
-		when(service.update(6L, invoice)).thenThrow(NotFoundException.class);
+		doThrow(new NotFoundException("Entity 6 not found")).when(service).update(6L, invoice);
 		mockMvc.perform(put("/invoices/{id}", 6)
 						.content(mapperUtil.asJsonString(invoice))
 						.contentType(APPLICATION_JSON))
@@ -158,7 +143,7 @@ class InvoiceControllerTest {
 
 	@Test
 	void deleteTestNotFound() throws Exception {
-		doThrow(NotFoundException.class).when(service).delete(6L);
+		doThrow(new NotFoundException("Entity 6 not found")).when(service).delete(6L);
 		mockMvc.perform(delete("/invoices/{id}", 6))
 				.andExpect(status().isNotFound());
 	}
@@ -174,5 +159,12 @@ class InvoiceControllerTest {
 						.content(body))
 				.andExpect(status().isBadRequest());
 	}
+
+	private static final List<Invoice> invoices = new ArrayList<Invoice>() {{
+		add(createInvoice(1L, "2021-02-01", 1000));
+		add(createInvoice(2L, "2021-02-02", 2000));
+		add(createInvoice(3L, "2021-02-03", 3000));
+		add(createInvoice(4L, "2021-02-04", 4000));
+	}};
 
 }

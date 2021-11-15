@@ -1,4 +1,4 @@
-package com.jobsity.rest.base;
+package com.jobsity.rest.base.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

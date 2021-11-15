@@ -1,4 +1,4 @@
-package com.jobsity.rest.base;
+package com.jobsity.rest.base.exception;
 
 public class Violation {
 

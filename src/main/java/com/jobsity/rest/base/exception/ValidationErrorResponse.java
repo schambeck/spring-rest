@@ -1,4 +1,4 @@
-package com.jobsity.rest.base;
+package com.jobsity.rest.base.exception;
 
 import java.util.ArrayList;
 import java.util.Collection;

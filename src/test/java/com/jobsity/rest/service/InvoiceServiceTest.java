@@ -1,7 +1,7 @@
 package com.jobsity.rest.service;
 
-import com.jobsity.rest.base.ConflictException;
-import com.jobsity.rest.base.NotFoundException;
+import com.jobsity.rest.base.exception.ConflictException;
+import com.jobsity.rest.base.exception.NotFoundException;
 import com.jobsity.rest.domain.Invoice;
 import com.jobsity.rest.repository.InvoiceRepository;
 import com.jobsity.rest.repository.InvoiceRepositoryImpl;

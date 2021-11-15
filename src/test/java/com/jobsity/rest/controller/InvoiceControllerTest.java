@@ -1,7 +1,7 @@
 package com.jobsity.rest.controller;
 
-import com.jobsity.rest.base.ConflictException;
-import com.jobsity.rest.base.NotFoundException;
+import com.jobsity.rest.base.exception.ConflictException;
+import com.jobsity.rest.base.exception.NotFoundException;
 import com.jobsity.rest.base.ObjectMapperUtil;
 import com.jobsity.rest.domain.Invoice;
 import com.jobsity.rest.service.InvoiceService;

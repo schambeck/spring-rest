@@ -2,6 +2,7 @@ package com.jobsity.rest.controller;
 
 import com.jobsity.rest.domain.Invoice;
 import com.jobsity.rest.service.InvoiceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,10 @@ import static org.springframework.http.HttpStatus.*;
 @Validated
 @RestController
 @RequestMapping("/invoices")
+@RequiredArgsConstructor
 class InvoiceController {
 
     private final InvoiceService service;
-
-    public InvoiceController(InvoiceService service) {
-        this.service = service;
-    }
 
     @GetMapping
     ResponseEntity<List<Invoice>> findAll() {

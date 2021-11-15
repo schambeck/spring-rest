@@ -1,15 +1,13 @@
 package com.jobsity.rest.base.exception;
 
+import lombok.Data;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+@Data
 public class ValidationErrorResponse {
 
-  private List<Violation> violations = new ArrayList<>();
-
-  public Collection<Violation> getViolations() {
-    return violations;
-  }
+  private final List<Violation> violations = new ArrayList<>();
 
 }

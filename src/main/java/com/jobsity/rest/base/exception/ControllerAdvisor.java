@@ -23,18 +23,12 @@ class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ConflictException.class)
     ResponseEntity<Object> handleConflictException(ConflictException exception) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", exception.getMessage());
-        return new ResponseEntity<>(body, CONFLICT);
+        return createResponse(exception.getMessage(), CONFLICT);
     }
 
     @ExceptionHandler(NotFoundException.class)
     ResponseEntity<Object> handleNotFoundException(NotFoundException exception) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", exception.getMessage());
-        return new ResponseEntity<>(body, NOT_FOUND);
+        return createResponse(exception.getMessage(), NOT_FOUND);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -57,6 +51,13 @@ class ControllerAdvisor extends ResponseEntityExceptionHandler {
             error.getViolations().add(new Violation(fieldError.getField(), fieldError.getDefaultMessage()));
         }
         return new ResponseEntity<>(error, BAD_REQUEST);
+    }
+
+    private ResponseEntity<Object> createResponse(String message, HttpStatus status) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", message);
+        return new ResponseEntity<>(body, status);
     }
 
 }

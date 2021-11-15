@@ -2,18 +2,16 @@ package com.jobsity.rest.service;
 
 import com.jobsity.rest.domain.Invoice;
 import com.jobsity.rest.repository.InvoiceRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class InvoiceServiceImpl implements InvoiceService {
+@RequiredArgsConstructor
+class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository repository;
-
-    public InvoiceServiceImpl(InvoiceRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public List<Invoice> findAll() {

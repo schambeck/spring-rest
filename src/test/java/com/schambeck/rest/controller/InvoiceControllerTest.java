@@ -1,10 +1,10 @@
-package com.jobsity.rest.controller;
+package com.schambeck.rest.controller;
 
-import com.jobsity.rest.base.exception.ConflictException;
-import com.jobsity.rest.base.exception.NotFoundException;
-import com.jobsity.rest.base.ObjectMapperUtil;
-import com.jobsity.rest.domain.Invoice;
-import com.jobsity.rest.service.InvoiceService;
+import com.schambeck.rest.base.exception.ConflictException;
+import com.schambeck.rest.base.exception.NotFoundException;
+import com.schambeck.rest.base.ObjectMapperUtil;
+import com.schambeck.rest.domain.Invoice;
+import com.schambeck.rest.service.InvoiceService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

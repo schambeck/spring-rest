@@ -1,7 +1,7 @@
-package com.jobsity.rest.controller;
+package com.schambeck.rest.controller;
 
-import com.jobsity.rest.domain.Invoice;
-import com.jobsity.rest.service.InvoiceService;
+import com.schambeck.rest.domain.Invoice;
+import com.schambeck.rest.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

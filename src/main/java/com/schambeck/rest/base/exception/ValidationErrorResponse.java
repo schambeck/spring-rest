@@ -1,4 +1,4 @@
-package com.jobsity.rest.base.exception;
+package com.schambeck.rest.base.exception;
 
 import lombok.Data;
 

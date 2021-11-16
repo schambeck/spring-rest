@@ -1,8 +1,8 @@
-package com.jobsity.rest.repository;
+package com.schambeck.rest.repository;
 
-import com.jobsity.rest.base.exception.ConflictException;
-import com.jobsity.rest.base.exception.NotFoundException;
-import com.jobsity.rest.domain.Invoice;
+import com.schambeck.rest.base.exception.ConflictException;
+import com.schambeck.rest.base.exception.NotFoundException;
+import com.schambeck.rest.domain.Invoice;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;

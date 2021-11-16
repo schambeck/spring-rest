@@ -1,4 +1,4 @@
-package com.jobsity.rest.base;
+package com.schambeck.rest.base;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

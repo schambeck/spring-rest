@@ -1,6 +1,6 @@
-package com.jobsity.rest.service;
+package com.schambeck.rest.service;
 
-import com.jobsity.rest.domain.Invoice;
+import com.schambeck.rest.domain.Invoice;
 
 import java.util.List;
 

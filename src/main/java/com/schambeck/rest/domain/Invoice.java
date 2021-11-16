@@ -1,7 +1,8 @@
-package com.jobsity.rest.domain;
+package com.schambeck.rest.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;

@@ -8,7 +8,7 @@
         <version>2.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.jobsity.rest</groupId>
+    <groupId>com.schambeck.rest</groupId>
     <artifactId>spring-rest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-rest</name>

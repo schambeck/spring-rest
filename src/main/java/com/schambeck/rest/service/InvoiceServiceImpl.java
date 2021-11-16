@@ -1,7 +1,7 @@
-package com.jobsity.rest.service;
+package com.schambeck.rest.service;
 
-import com.jobsity.rest.domain.Invoice;
-import com.jobsity.rest.repository.InvoiceRepository;
+import com.schambeck.rest.domain.Invoice;
+import com.schambeck.rest.repository.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

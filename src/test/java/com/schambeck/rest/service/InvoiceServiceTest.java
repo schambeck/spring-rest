@@ -4,7 +4,6 @@ import com.schambeck.rest.base.exception.ConflictException;
 import com.schambeck.rest.base.exception.NotFoundException;
 import com.schambeck.rest.domain.Invoice;
 import com.schambeck.rest.repository.InvoiceRepository;
-import com.schambeck.rest.repository.InvoiceRepositoryImpl;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @Tag("unit")
-@SpringBootTest(classes = {InvoiceRepositoryImpl.class, InvoiceServiceImpl.class})
+@SpringBootTest(classes = {InvoiceRepository.class, InvoiceServiceImpl.class})
 class InvoiceServiceTest {
 
 	@Autowired
@@ -51,7 +51,13 @@ class InvoiceServiceTest {
 
 	@Test
 	void findAll() {
-		when(repository.findAll()).thenReturn(invoices);
+		List<Invoice> mockInvoices = new ArrayList<Invoice>() {{
+			add(createInvoice(1L, "2021-02-01", 1000));
+			add(createInvoice(2L, "2021-02-02", 2000));
+			add(createInvoice(3L, "2021-02-03", 3000));
+			add(createInvoice(4L, "2021-02-04", 4000));
+		}};
+		when(repository.findAll()).thenReturn(mockInvoices);
 		List<Invoice> invoices = service.findAll();
 		assertEquals(4, invoices.size());
 		assertInvoice(invoices, 0, 1, "2021-02-01", 1000D);
@@ -62,7 +68,7 @@ class InvoiceServiceTest {
 
 	@Test
 	void findById() {
-		when(repository.findById(1L)).thenReturn(createInvoice(1L, "2021-02-01", 1000));
+		when(repository.findById(1L)).thenReturn(Optional.of(createInvoice(1L, "2021-02-01", 1000)));
 		Invoice invoice = service.findById(1L);
 		assertInvoice(invoice, 1, "2021-02-01", 1000D);
 	}
@@ -78,8 +84,8 @@ class InvoiceServiceTest {
 
 	@Test
 	void create() {
-		Invoice invoice = createInvoice(5L, "2021-02-05", 5000);
-		when(repository.create(invoice)).thenReturn(createInvoice(5L, "2021-02-05", 5000));
+		Invoice invoice = createInvoice("2021-02-05", 5000);
+		when(repository.save(invoice)).thenReturn(createInvoice(5L, "2021-02-05", 5000));
 		Invoice created = service.create(invoice);
 		assertInvoice(created, 5, "2021-02-05", 5000D);
 	}
@@ -87,7 +93,7 @@ class InvoiceServiceTest {
 	@Test
 	void createConflict() {
 		Invoice invoice = createInvoice(4L, "2021-02-04", 4000);
-		doThrow(new ConflictException("Entity 4 already exists")).when(repository).create(invoice);
+		doThrow(new ConflictException("Entity 4 already exists")).when(repository).save(invoice);
 		ConflictException exception = assertThrows(ConflictException.class, () -> service.create(invoice));
 		String expected = "Entity 4 already exists";
 		String actual = exception.getMessage();
@@ -97,15 +103,18 @@ class InvoiceServiceTest {
 	@Test
 	void update() {
 		Invoice invoice = createInvoice( "2021-02-05", 5000);
-		when(repository.update(1L, invoice)).thenReturn(createInvoice(1L, "2021-02-05", 5000));
+		Invoice mockInvoice = createInvoice(1L, "2021-02-05", 5000);
+		when(repository.findById(1L)).thenReturn(Optional.of(mockInvoice));
+		when(repository.save(mockInvoice)).thenReturn(mockInvoice);
 		Invoice updated = service.update(1L, invoice);
 		assertInvoice(updated, 1, "2021-02-05", 5000D);
 	}
 
 	@Test
 	void updateNotFound() {
+		when(repository.existsById(6L)).thenReturn(false);
 		Invoice invoice = createInvoice("2021-02-06", 6000);
-		doThrow(new NotFoundException("Entity 6 not found")).when(repository).update(6L, invoice);
+		doThrow(new NotFoundException("Entity 6 not found")).when(repository).save(invoice);
 		NotFoundException exception = assertThrows(NotFoundException.class, () -> service.update(6L, invoice));
 		String expected = "Entity 6 not found";
 		String actual = exception.getMessage();
@@ -114,24 +123,19 @@ class InvoiceServiceTest {
 
 	@Test
 	void delete() {
-		doNothing().when(repository).delete(1L);
+		when(repository.existsById(1L)).thenReturn(true);
+		doNothing().when(repository).deleteById(1L);
 		service.delete(1L);
 	}
 
 	@Test
 	void deleteNotFound() {
-		doThrow(new NotFoundException("Entity 6 not found")).when(repository).delete(6L);
+		when(repository.existsById(1L)).thenReturn(false);
+		doThrow(new NotFoundException("Entity 6 not found")).when(repository).deleteById(6L);
 		NotFoundException exception = assertThrows(NotFoundException.class, () -> service.delete(6L));
 		String expected = "Entity 6 not found";
 		String actual = exception.getMessage();
 		assertEquals(actual, expected);
 	}
-
-	private static final List<Invoice> invoices = new ArrayList<Invoice>() {{
-		add(createInvoice(1L, "2021-02-01", 1000));
-		add(createInvoice(2L, "2021-02-02", 2000));
-		add(createInvoice(3L, "2021-02-03", 3000));
-		add(createInvoice(4L, "2021-02-04", 4000));
-	}};
 
 }

@@ -1,0 +1,5 @@
+CREATE TABLE invoice (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    issued DATE NOT NULL,
+    total NUMERIC NOT NULL
+);

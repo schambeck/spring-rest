@@ -20,3 +20,5 @@ Use the following collection in order to test its requests:
 | Mono         |         90 |
 | Flux         |         92 |
 | RestTemplate |          4 |
+
+![alt text](https://i.ibb.co/JHFJ6y3/column-chart.png)

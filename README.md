@@ -1,6 +1,6 @@
 # spring-rest
 
-Spring boot rest application with static data. 
+Spring boot rest application with H2 in-memory database.
 
 ## Postman
 Use the following collection in order to test its requests:

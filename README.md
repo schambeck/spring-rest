@@ -10,6 +10,7 @@ Use the following collection in order to test its requests:
 
 ### Params
 
++ Request delay = 1 sec
 + User Threads = 500
 + Loop Count = 10
 

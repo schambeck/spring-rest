@@ -1,8 +1,8 @@
 package com.schambeck.rest.controller;
 
+import com.schambeck.rest.base.ObjectMapperUtil;
 import com.schambeck.rest.base.exception.ConflictException;
 import com.schambeck.rest.base.exception.NotFoundException;
-import com.schambeck.rest.base.ObjectMapperUtil;
 import com.schambeck.rest.domain.Invoice;
 import com.schambeck.rest.service.InvoiceService;
 import org.junit.jupiter.api.Tag;
@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.math.BigDecimal;
@@ -24,8 +25,8 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Tag("unit")
 @Import(ObjectMapperUtil.class)
@@ -66,8 +67,20 @@ class InvoiceControllerTest {
 
 	@Test
 	void findAll() throws Exception {
+		List<Invoice> invoices = new ArrayList<Invoice>() {{
+			add(createInvoice(1L, "2021-02-01", 1000));
+			add(createInvoice(2L, "2021-02-02", 2000));
+			add(createInvoice(3L, "2021-02-03", 3000));
+			add(createInvoice(4L, "2021-02-04", 4000));
+		}};
+
 		when(service.findAll()).thenReturn(invoices);
-		mockMvc.perform(get("/invoices"))
+
+		MvcResult result = mockMvc.perform(get("/invoices"))
+				.andExpect(request().asyncStarted())
+				.andReturn();
+
+		mockMvc.perform(asyncDispatch(result))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$").isArray())
 				.andExpect(jsonPath("$", hasSize(4)))
@@ -80,7 +93,12 @@ class InvoiceControllerTest {
 	@Test
 	void findById() throws Exception {
 		when(service.findById(1L)).thenReturn(createInvoice(1L, "2021-02-01", 1000));
-		mockMvc.perform(get("/invoices/{id}", 1))
+
+		MvcResult result = mockMvc.perform(get("/invoices/{id}", 1))
+				.andExpect(request().asyncStarted())
+				.andReturn();
+
+		mockMvc.perform(asyncDispatch(result))
 				.andExpect(status().isOk())
 				.andExpectAll(invoiceMatchers(1, "2021-02-01", 1000D));
 	}
@@ -96,9 +114,14 @@ class InvoiceControllerTest {
 	void create() throws Exception {
 		Invoice invoice = createInvoice(5L, "2021-02-05", 5000);
 		when(service.create(invoice)).thenReturn(createInvoice(5L, "2021-02-05", 5000));
-		mockMvc.perform(post("/invoices")
+
+		MvcResult result = mockMvc.perform(post("/invoices")
 						.content(mapperUtil.asJsonString(invoice))
 						.contentType(APPLICATION_JSON))
+				.andExpect(request().asyncStarted())
+				.andReturn();
+
+		mockMvc.perform(asyncDispatch(result))
 				.andExpect(status().isCreated())
 				.andExpectAll(invoiceMatchers(5, "2021-02-05", 5000D));
 	}
@@ -117,9 +140,14 @@ class InvoiceControllerTest {
 	void update() throws Exception {
 		Invoice invoice = createInvoice("2021-02-02", 2000);
 		when(service.update(1L, invoice)).thenReturn(createInvoice(1L, "2021-02-02", 2000));
-		mockMvc.perform(put("/invoices/{id}", 1)
+
+		MvcResult result = mockMvc.perform(put("/invoices/{id}", 1)
 						.content(mapperUtil.asJsonString(invoice))
 						.contentType(APPLICATION_JSON))
+				.andExpect(request().asyncStarted())
+				.andReturn();
+
+		mockMvc.perform(asyncDispatch(result))
 				.andExpect(status().isOk())
 				.andExpectAll(invoiceMatchers(1, "2021-02-02", 2000D));
 	}
@@ -137,7 +165,12 @@ class InvoiceControllerTest {
 	@Test
 	void deleteTest() throws Exception {
 		doNothing().when(service).delete(1L);
-		mockMvc.perform(delete("/invoices/{id}", 1))
+
+		MvcResult result = mockMvc.perform(delete("/invoices/{id}", 1))
+				.andExpect(request().asyncStarted())
+				.andReturn();
+
+		mockMvc.perform(asyncDispatch(result))
 				.andExpect(status().isNoContent());
 	}
 
@@ -159,12 +192,5 @@ class InvoiceControllerTest {
 						.content(body))
 				.andExpect(status().isBadRequest());
 	}
-
-	private static final List<Invoice> invoices = new ArrayList<Invoice>() {{
-		add(createInvoice(1L, "2021-02-01", 1000));
-		add(createInvoice(2L, "2021-02-02", 2000));
-		add(createInvoice(3L, "2021-02-03", 3000));
-		add(createInvoice(4L, "2021-02-04", 4000));
-	}};
 
 }

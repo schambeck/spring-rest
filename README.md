@@ -11,14 +11,16 @@ Use the following collection in order to test its requests:
 ### Params
 
 + User Threads = 500
-+ Loop Count = 3
++ Loop Count = 10
 
 ### Results
 
 | WebClient    | Throughput |
 | ------------ | ----------:|
-| Mono         |         90 |
-| Flux         |         92 |
-| RestTemplate |          4 |
+| Mono         |        450 |
+| Flux         |        450 |
+| RestTemplate |        200 |
 
-![alt text](https://i.ibb.co/JHFJ6y3/column-chart.png)
+#### Chart
+
+![alt text](https://i.ibb.co/MZqgFB8/column-chart.png)

@@ -1,17 +1,13 @@
 package com.schambeck.rest.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.schambeck.rest.base.AbstractPersistable;
+import lombok.*;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -20,13 +16,13 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
-public class Invoice implements Serializable {
+@EqualsAndHashCode(of = "id", callSuper = false)
+@Builder(toBuilder = true)
+public class Invoice extends AbstractPersistable<Invoice, Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @EqualsAndHashCode.Include
+    @org.springframework.data.annotation.Id
     private Long id;
 
     @PastOrPresent(message = "Issued must be in the past")

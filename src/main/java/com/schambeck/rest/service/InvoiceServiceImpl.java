@@ -1,58 +1,52 @@
 package com.schambeck.rest.service;
 
-import com.schambeck.rest.base.exception.ConflictException;
 import com.schambeck.rest.base.exception.NotFoundException;
 import com.schambeck.rest.domain.Invoice;
 import com.schambeck.rest.repository.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
+import java.time.Duration;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
-class InvoiceServiceImpl implements InvoiceService {
+public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository repository;
 
     @Override
-    public List<Invoice> findAll() {
-        return StreamSupport.stream(repository.findAll().spliterator(), false)
-                .collect(toList());
+    public Flux<Invoice> findAll() {
+        return repository.findAll().delayElements(Duration.ofMillis(500));
     }
 
     @Override
-    public Invoice findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException(format("Entity %d not found", id)));
+    public Mono<Invoice> findById(Long id) {
+        return repository.findById(id).switchIfEmpty(Mono.error(new NotFoundException(format("Entity %d not found", id))));
     }
 
     @Override
-    public Invoice create(Invoice invoice) {
-        if (invoice.getId() != null && repository.existsById(invoice.getId())) {
-            throw new ConflictException(format("Entity %d already exists", invoice.getId()));
-        }
-        return repository.save(invoice);
+    public Mono<Invoice> create(Mono<Invoice> invoice) {
+        return invoice.flatMap(p -> repository.save(p.setAsNew())
+                .onErrorResume(DataIntegrityViolationException.class, e -> Mono.error(new DataIntegrityViolationException(format("Entity %d already exists", p.getId())))));
     }
 
     @Override
-    public Invoice update(Long id, Invoice invoice) {
-        Invoice updated = findById(id);
-        updated.setIssued(invoice.getIssued());
-        updated.setTotal(invoice.getTotal());
-        return repository.save(updated);
+    public Mono<Invoice> update(Long id, Mono<Invoice> invoice) {
+        return invoice.flatMap(p -> Mono.just(p).zipWith(findById(id))
+                .flatMap(q -> repository.save(q.getT2().toBuilder().issued(q.getT1().getIssued()).total(q.getT1().getTotal()).build())));
     }
 
     @Override
-    public void delete(Long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-        } else {
-            throw new NotFoundException(format("Entity %d not found", id));
-        }
+    public Mono<Void> delete(Long id) {
+        return repository.existsById(id)
+                .filter(exists -> exists)
+                .switchIfEmpty(Mono.error(new NotFoundException(format("Entity %d not found", id))))
+                .flatMap(exists -> repository.deleteById(id));
     }
 
 }

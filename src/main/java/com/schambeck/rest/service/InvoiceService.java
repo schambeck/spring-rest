@@ -1,19 +1,19 @@
 package com.schambeck.rest.service;
 
 import com.schambeck.rest.domain.Invoice;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface InvoiceService {
 
-    List<Invoice> findAll();
+    Flux<Invoice> findAll();
 
-    Invoice findById(Long id);
+    Mono<Invoice> findById(Long id);
 
-    Invoice create(Invoice invoice);
+    Mono<Invoice> create(Mono<Invoice> invoice);
 
-    Invoice update(Long id, Invoice invoice);
+    Mono<Invoice> update(Long id, Mono<Invoice> invoice);
 
-    void delete(Long id);
+    Mono<Void> delete(Long id);
 
 }

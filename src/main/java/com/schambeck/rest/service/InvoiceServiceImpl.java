@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-
 import static java.lang.String.format;
 
 @Service
@@ -21,7 +19,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Flux<Invoice> findAll() {
-        return repository.findAll().delayElements(Duration.ofMillis(500));
+        return repository.findAll();
     }
 
     @Override

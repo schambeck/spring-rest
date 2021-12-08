@@ -1,5 +1,5 @@
 PROFILE = -Dspring.profiles.active=local
-APP = spring-rest
+APP = spring-webflux
 VERSION = 0.0.1-SNAPSHOT
 JAR = target/${APP}-${VERSION}.jar
 DELAY_DURATION = 500

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.schambeck.rest</groupId>
-    <artifactId>spring-rest</artifactId>
+    <artifactId>spring-webflux</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-rest</name>
-    <description>spring-rest</description>
+    <name>spring-webflux</name>
+    <description>spring-webflux</description>
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -105,7 +105,7 @@
         <repository>
             <id>github</id>
             <name>GitHub schambeck Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/schambeck/spring-rest</url>
+            <url>https://maven.pkg.github.com/schambeck/spring-webflux</url>
         </repository>
     </distributionManagement>
 

@@ -1,4 +1,4 @@
-package com.schambeck.rest.base.exception;
+package com.schambeck.webflux.base.exception;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

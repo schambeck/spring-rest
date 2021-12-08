@@ -1,8 +1,8 @@
-package com.schambeck.rest.service;
+package com.schambeck.webflux.service;
 
-import com.schambeck.rest.base.exception.NotFoundException;
-import com.schambeck.rest.domain.Invoice;
-import com.schambeck.rest.repository.InvoiceRepository;
+import com.schambeck.webflux.base.exception.NotFoundException;
+import com.schambeck.webflux.domain.Invoice;
+import com.schambeck.webflux.repository.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,9 @@
-package com.schambeck.rest.controller;
+package com.schambeck.webflux.controller;
 
-import com.schambeck.rest.base.exception.NotFoundException;
-import com.schambeck.rest.domain.Invoice;
-import com.schambeck.rest.repository.InvoiceRepository;
-import com.schambeck.rest.service.InvoiceServiceImpl;
+import com.schambeck.webflux.base.exception.NotFoundException;
+import com.schambeck.webflux.domain.Invoice;
+import com.schambeck.webflux.repository.InvoiceRepository;
+import com.schambeck.webflux.service.InvoiceServiceImpl;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

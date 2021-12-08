@@ -1,6 +1,6 @@
-package com.schambeck.rest.service;
+package com.schambeck.webflux.service;
 
-import com.schambeck.rest.domain.Invoice;
+import com.schambeck.webflux.domain.Invoice;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

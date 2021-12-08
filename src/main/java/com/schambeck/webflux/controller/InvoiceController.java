@@ -1,7 +1,7 @@
-package com.schambeck.rest.controller;
+package com.schambeck.webflux.controller;
 
-import com.schambeck.rest.domain.Invoice;
-import com.schambeck.rest.service.InvoiceService;
+import com.schambeck.webflux.domain.Invoice;
+import com.schambeck.webflux.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

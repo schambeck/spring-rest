@@ -1,6 +1,6 @@
 # spring-rest
 
-Spring Boot REST server application using Reactive WebFlux (Mono and Flux types) and traditional blocking approach with H2 in-memory database.
+Spring Boot REST server application using Reactive WebFlux and traditional blocking approach with H2 in-memory database.
 
 ## Postman
 Use the following collection in order to test its requests:
@@ -12,15 +12,13 @@ Use the following collection in order to test its requests:
 
 + Request delay = 1 sec
 + User Threads = 500
-+ Loop Count = 10
 
 ### Results
 
-| WebClient    | Throughput |
-| ------------ | ----------:|
-| Mono         |        450 |
-| Flux         |        450 |
-| RestTemplate |        200 |
+| Server  | Throughput |
+| ------- | ----------:|
+| WebFlux |        450 |
+| WebMvc  |        200 |
 
 #### Chart
 

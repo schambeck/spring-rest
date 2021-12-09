@@ -1,6 +1,6 @@
 package com.schambeck.webflux.controller;
 
-import com.schambeck.webflux.base.exception.NotFoundException;
+import com.schambeck.webflux.exception.NotFoundException;
 import com.schambeck.webflux.domain.Invoice;
 import com.schambeck.webflux.repository.InvoiceRepository;
 import com.schambeck.webflux.service.InvoiceServiceImpl;

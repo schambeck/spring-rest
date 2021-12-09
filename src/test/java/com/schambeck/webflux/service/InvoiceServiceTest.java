@@ -1,7 +1,7 @@
 package com.schambeck.webflux.service;
 
-import com.schambeck.webflux.base.exception.ConflictException;
-import com.schambeck.webflux.base.exception.NotFoundException;
+import com.schambeck.webflux.exception.ConflictException;
+import com.schambeck.webflux.exception.NotFoundException;
 import com.schambeck.webflux.domain.Invoice;
 import com.schambeck.webflux.repository.InvoiceRepository;
 import org.junit.jupiter.api.Tag;

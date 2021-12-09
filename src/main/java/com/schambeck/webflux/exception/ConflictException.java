@@ -1,4 +1,4 @@
-package com.schambeck.webflux.base.exception;
+package com.schambeck.webflux.exception;
 
 public class ConflictException extends RuntimeException {
 

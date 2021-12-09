@@ -1,6 +1,5 @@
 package com.schambeck.webflux.domain;
 
-import com.schambeck.webflux.base.AbstractPersistable;
 import lombok.*;
 
 import javax.persistence.GeneratedValue;

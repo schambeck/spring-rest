@@ -1,4 +1,4 @@
-package com.schambeck.webflux.base;
+package com.schambeck.webflux.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Transient;

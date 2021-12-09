@@ -1,4 +1,4 @@
-package com.schambeck.webflux.base.exception;
+package com.schambeck.webflux.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

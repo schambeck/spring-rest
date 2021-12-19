@@ -1,14 +1,16 @@
 package com.schambeck.webflux.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class ValidationErrorResponse {
 
-    private final List<Violation> violations;
+    private List<Violation> violations;
 
 }

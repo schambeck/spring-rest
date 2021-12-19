@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -62,24 +61,20 @@ class ControllerAdvisor {
     @ExceptionHandler(WebExchangeBindException.class)
     ValidationErrorResponse handleValidationException(WebExchangeBindException e) {
         var errors = e.getBindingResult()
-                .getAllErrors()
+                .getFieldErrors()
                 .stream()
                 .map(error -> createViolation(e, error))
                 .collect(toList());
         return new ValidationErrorResponse(errors);
     }
 
-    private Violation createViolation(WebExchangeBindException e, ObjectError error) {
+    private Violation createViolation(WebExchangeBindException e, FieldError field) {
         Optional<Object> target = Optional.ofNullable(e.getTarget());
         BindingResult result = e.getBindingResult();
-        if (error instanceof FieldError) {
-            FieldError field = (FieldError) error;
-            Optional<Object> value = Optional.ofNullable(result.getRawFieldValue(field.getField()));
-            return new Violation(format("%s.%s", target.map(p -> p.getClass().getSimpleName()).orElse(null), field.getField()),
-                    field.getDefaultMessage(),
-                    value.map(Object::toString).orElse(null));
-        }
-        return new Violation(error.getObjectName(), error.getDefaultMessage());
+        Optional<Object> value = Optional.ofNullable(result.getRawFieldValue(field.getField()));
+        return new Violation(format("%s.%s", target.map(p -> p.getClass().getSimpleName()).orElse(null), field.getField()),
+                field.getDefaultMessage(),
+                value.map(Object::toString).orElse(null));
     }
 
 }

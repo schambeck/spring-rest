@@ -2,6 +2,8 @@ package com.schambeck.webflux.controller;
 
 import com.schambeck.webflux.exception.NotFoundException;
 import com.schambeck.webflux.domain.Invoice;
+import com.schambeck.webflux.exception.ValidationErrorResponse;
+import com.schambeck.webflux.exception.Violation;
 import com.schambeck.webflux.repository.InvoiceRepository;
 import com.schambeck.webflux.service.InvoiceServiceImpl;
 import org.junit.jupiter.api.Tag;
@@ -42,6 +44,12 @@ class InvoiceControllerIT {
 
 	private static Mono<Invoice> createInvoiceMono(Long id, String issued, double total) {
 		return Mono.just(createInvoice(id, issued, total));
+	}
+
+	private static void assertViolation(Violation violation) {
+		assertEquals("InvoiceController.findById.id", violation.getField());
+		assertEquals("deve ser maior que 0", violation.getMessage());
+		assertEquals("0", violation.getValue());
 	}
 
 	private void assertInvoice(List<Invoice> invoices, int index, int id, String issued, double total) {
@@ -99,6 +107,16 @@ class InvoiceControllerIT {
 	}
 
 	@Test
+	void findByIdInvalid() {
+		webClient.get().uri("/invoices/{id}", 0)
+				.exchange()
+				.expectStatus().isBadRequest()
+				.expectBody(ValidationErrorResponse.class)
+				.value(p -> assertEquals(1, p.getViolations().size()))
+				.value(p -> assertViolation(p.getViolations().get(0)));
+	}
+
+	@Test
 	void create() {
 		Invoice payload = createInvoice(5L, "2021-02-05", 5000);
 		when(repository.save(payload)).thenReturn(createInvoiceMono(5L, "2021-02-05", 5000));
@@ -122,6 +140,20 @@ class InvoiceControllerIT {
 				.body(Mono.just(payload), Invoice.class)
 				.exchange()
 				.expectStatus().is4xxClientError();
+	}
+
+	@Test
+	void upsert() {
+		Invoice payload = createInvoice(5L, "2021-02-05", 5000);
+		when(repository.save(payload)).thenReturn(createInvoiceMono(5L, "2021-02-05", 5000));
+		webClient.put()
+				.uri("/invoices")
+				.contentType(APPLICATION_JSON)
+				.body(Mono.just(payload), Invoice.class)
+				.exchange()
+				.expectStatus().isCreated()
+				.expectBody(Invoice.class)
+				.value(invoice -> assertInvoice(invoice, 5, "2021-02-05", 5000D));
 	}
 
 	@Test

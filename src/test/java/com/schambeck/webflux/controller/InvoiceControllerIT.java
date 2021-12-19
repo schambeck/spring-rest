@@ -48,7 +48,7 @@ class InvoiceControllerIT {
 
 	private static void assertViolation(Violation violation) {
 		assertEquals("InvoiceController.findById.id", violation.getField());
-		assertEquals("deve ser maior que 0", violation.getMessage());
+		assertEquals("must be greater than 0", violation.getMessage());
 		assertEquals("0", violation.getValue());
 	}
 

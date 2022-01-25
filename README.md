@@ -1,4 +1,6 @@
 # spring-webflux
+[![build](https://github.com/schambeck/spring-webflux/actions/workflows/maven.yml/badge.svg)](https://github.com/schambeck/spring-webflux/actions/workflows/maven.yml)
+[![codecov](https://codecov.io/gh/schambeck/spring-webflux/branch/main/graph/badge.svg?token=QJLWY5K9KF)](https://codecov.io/gh/schambeck/spring-webflux)
 
 Spring Boot REST server application using Reactive WebFlux non-blocking approach with H2 in-memory database.
 

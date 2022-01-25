@@ -26,3 +26,7 @@ jobs:
       run: mvn -B verify --file pom.xml
     - name: Codecov
       uses: codecov/codecov-action@v2.1.0
+    - name: Run check style
+      uses: nikitasavinov/checkstyle-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}

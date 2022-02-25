@@ -8,7 +8,7 @@ public abstract class AbstractPersistable<T, ID> implements Persistable<ID> {
 
     @JsonIgnore
     @Transient
-    private boolean newEntity;
+    private boolean newEntity = true;
 
     @Override
     @JsonIgnore
@@ -18,8 +18,8 @@ public abstract class AbstractPersistable<T, ID> implements Persistable<ID> {
     }
 
     @SuppressWarnings("unchecked")
-    public T setAsNew() {
-        newEntity = true;
+    public T setAsNotNew() {
+        newEntity = false;
         return (T) this;
     }
 

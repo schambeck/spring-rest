@@ -51,12 +51,6 @@ class ControllerAdvisor {
         return new ValidationErrorResponse(errors);
     }
 
-    private Violation createViolation(ConstraintViolation<?> error) {
-        return new Violation(format("%s.%s", error.getRootBeanClass().getSimpleName(), error.getPropertyPath().toString()),
-                error.getMessage(),
-                error.getInvalidValue().toString());
-    }
-
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(WebExchangeBindException.class)
     ValidationErrorResponse handleValidationException(WebExchangeBindException e) {
@@ -66,6 +60,12 @@ class ControllerAdvisor {
                 .map(error -> createViolation(e, error))
                 .collect(toList());
         return new ValidationErrorResponse(errors);
+    }
+
+    private Violation createViolation(ConstraintViolation<?> error) {
+        return new Violation(format("%s.%s", error.getRootBeanClass().getSimpleName(), error.getPropertyPath().toString()),
+                error.getMessage(),
+                error.getInvalidValue().toString());
     }
 
     private Violation createViolation(WebExchangeBindException e, FieldError field) {
